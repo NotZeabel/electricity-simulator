@@ -4,6 +4,7 @@ let bgColor;
 let circuit
 let selected
 let mode
+let material;
 
 async function setup() {
     let canvas = createCanvas(windowWidth, windowHeight);
@@ -14,6 +15,19 @@ async function setup() {
     circuit = new Circuit()
     selected = null
     mode = "draw"
+
+    /*
+    EXAMPLE METAL RESISTIVITIES
+    Silver: 1.59e-8
+    Copper: 1.68e-8
+    Gold: 2.44e-8
+    Zinc: 5.90e-8
+    Iron: 9.70e-8
+    Steel: 69.0e-8
+    Mercury 98.0e-8
+    */ 
+    material = new Material(200, 10, 1.68e-8, 0.01);
+    material.calculateVariables();
 
     // populateGUI(gui);
 }
