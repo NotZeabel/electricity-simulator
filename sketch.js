@@ -6,6 +6,8 @@ let selected
 let mode
 let material;
 
+let agents
+
 async function setup() {
     let canvas = createCanvas(windowWidth, windowHeight);
     gui = createGUI("main-gui", canvas);
@@ -16,6 +18,8 @@ async function setup() {
     selected = null
     mode = "draw"
 
+    agents = []
+
     /*
     EXAMPLE METAL RESISTIVITIES
     Silver: 1.59e-8
@@ -25,7 +29,7 @@ async function setup() {
     Iron: 9.70e-8
     Steel: 69.0e-8
     Mercury 98.0e-8
-    */ 
+    */
     material = new Material(200, 10, 1.68e-8, 0.01);
     material.calculateVariables();
 
@@ -51,6 +55,12 @@ function draw() {
     background(bgColor);
 
     circuit.display(selected, mode === "draw", mouseX, mouseY)
+
+    for (const a of agents) {
+        a.follow(circuit)
+        a.update()
+        a.display()
+    }
 
     noStroke()
     textAlign(LEFT, TOP)
@@ -81,5 +91,8 @@ function keyPressed() {
             selected == null
         }
         return false
+    } else if (key.toLowerCase() === "a") {
+        agents.push(new Electron(mouseX, mouseY, 1))
     }
+
 }

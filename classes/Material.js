@@ -26,8 +26,8 @@ class Material {
         this.conductivity = 1 / this.resistivity;
         let current = this.voltage / this.resistance;
 
-        console.log("R =", (this.resistance).toExponential(2));
-        console.log("σ =", (this.conductivity).toExponential(2));
-        console.log("I =", current);
+        // console.log("R =", (this.resistance).toExponential(2));
+        // console.log("σ =", (this.conductivity).toExponential(2));
+        // console.log("I =", current);
     }
 }
