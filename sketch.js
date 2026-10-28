@@ -8,6 +8,8 @@ let material;
 let emitter;
 let receptor;
 
+let resistance;
+let conductivity;
 let agents
 
 async function setup() {
@@ -15,12 +17,11 @@ async function setup() {
     gui = createGUI("main-gui", canvas);
 
     bgColor = color(0, 0, 0);
-
-    circuit = new Circuit()
+    
+    agents = []
+    circuit = new Circuit(agents)
     selected = null
     mode = "draw"
-
-    agents = []
 
     /*
     EXAMPLE METAL RESISTIVITIES
@@ -33,8 +34,11 @@ async function setup() {
     Mercury 98.0e-8
     */
     material = new Material(200, 10, 1.68e-8, 0.01);
-    material.calculateVariables();
+    resistance = material.calculateResistance();
+    conductivity = material.calculateConductivity();
 
+    console.log("Resistance   =", (resistance).toExponential(2));
+    console.log("Conductivity =", (conductivity).toExponential(2));
     // populateGUI(gui);
 }
 
@@ -57,6 +61,7 @@ function draw() {
     background(bgColor);
 
     circuit.display(selected, mode === "draw", mouseX, mouseY)
+    circuit.applyResistance(resistance);
 
     if (emitter) {
         emitter.display();

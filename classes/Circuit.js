@@ -1,9 +1,8 @@
 class Circuit {
-    constructor() {
+    constructor(electrons) {
         this.length = 0;
         this.matWidth = 0;
-        this.conductivity = 0;
-        this.electrons = [];
+        this.electrons = electrons;
 
         this.points = []
         this.segments = []
@@ -77,6 +76,9 @@ class Circuit {
         }
     }
 
-    // Applies a drag force to all electrons depending on the conductivity
-    applyDrag() { }
+    // Applies a drag force to all electrons based on the resistance
+    applyResistance(resistance) { 
+        for (let e of this.electrons)
+            e.applyDrag(resistance);
+    }
 }
