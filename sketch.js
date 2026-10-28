@@ -1,5 +1,8 @@
 let gui;
 let bgColor;
+let buttons
+let lastHasPath
+let panel
 
 let circuit
 let selected
@@ -17,7 +20,17 @@ async function setup() {
     gui = createGUI("main-gui", canvas);
 
     bgColor = color(0, 0, 0);
-    
+    buttons = {}
+    lastHasPath = null
+    panel = {
+        x: 10,
+        y: 10,
+        w: 100,
+        h: 36,
+        gap: 8,
+        count: 8
+    }
+
     agents = []
     circuit = new Circuit(agents)
     selected = null
@@ -37,28 +50,115 @@ async function setup() {
     resistance = material.calculateResistance();
     conductivity = material.calculateConductivity();
 
-    console.log("Resistance   =", (resistance).toExponential(2));
-    console.log("Conductivity =", (conductivity).toExponential(2));
-    // populateGUI(gui);
+    // console.log("Resistance   =", (resistance).toExponential(2));
+    // console.log("Conductivity =", (conductivity).toExponential(2));
+
+    populateGUI();
+    updateButtonStates(true)
 }
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight)
 }
 
-function populateGUI(gui) {
-    gui
-        .button("btn0", 90, 50, 300, 60)
-        .text("Random BG color")
-        .textSize(20)
-        .corners(10)
-        .setAction(() => {
-            bgColor = color(random(255), random(255), random(255));
-        });
+function hasPath() {
+    return !!circuit && !!circuit.segments && circuit.segments.length > 0
+}
+
+function addButton(name, index, label, action) {
+    const x = panel.x + index * (panel.w + panel.gap)
+
+    const button = gui
+        .button(name, x, panel.y, panel.w, panel.h)
+        .text(label)
+        .textSize(16)
+        .corners(8)
+        .setAction(action)
+
+    buttons[name] = button
+    return button
+}
+
+function populateGUI() {
+    addButton("buttonDraw", 0, "Draw", () => {
+        mode = "draw"
+        selected = null
+    })
+
+    addButton("buttonSelect", 1, "Select", () => {
+        mode = "select"
+    })
+
+    addButton("buttonUndo", 2, "Undo", () => {
+        circuit.removeLastPoint()
+        if (selected && !circuit.segments.includes(selected) ||
+            circuit.segments.length <= 0) {
+            agents = []
+            emitter = null
+            receptor = null
+            selected = null
+        }
+    })
+
+    addButton("buttonClear", 3, "Clear", () => {
+        circuit.clear()
+        agents = []
+        emitter = null
+        receptor = null
+        selected = null
+    })
+
+    addButton("buttonAgent", 4, "Agent", () => {
+        if (hasPath()) mode = "agent"
+    })
+
+    addButton("buttonEmitter", 5, "Emitter", () => {
+        if (hasPath()) mode = "emitter"
+    })
+
+    addButton("buttonReceptor", 6, "Receptor", () => {
+        if (hasPath()) mode = "receptor"
+    })
+}
+
+function updateButtonStates(force = false) {
+    const ok = hasPath()
+
+    if (!force && ok === lastHasPath) return
+
+    lastHasPath = ok
+
+    for (const name of ["buttonAgent", "buttonEmitter", "buttonReceptor"]) {
+        const button = buttons[name]
+
+        if (!button) continue
+
+        if (ok) button.enable()
+        else button.disable()
+    }
+
+    if (!ok && ["agent", "emitter", "receptor"].includes(mode)) {
+        mode = "draw"
+    }
+}
+
+function overPanel(x, y) {
+    const totalWidth = panel.count * panel.w + (panel.count - 1) * panel.gap
+
+    const pad = 6
+
+    return (
+        x >= panel.x - pad &&
+        x <= panel.x + totalWidth + pad &&
+        y >= panel.y - pad &&
+        y <= panel.y + panel.h + pad
+    )
 }
 
 function draw() {
     background(bgColor);
+
+    updateButtonStates()
 
     circuit.display(selected, mode === "draw", mouseX, mouseY)
     circuit.applyResistance(resistance);
@@ -83,38 +183,25 @@ function draw() {
     noStroke()
     textAlign(LEFT, TOP)
     textSize(13)
-    text("Mode: " + mode + "\n" + "D draw\tS select\tU undo\tC clear", 16, 16)
+    text("Mode: " + mode, panel.x, panel.y + panel.h + 12)
+
+    gui.draw()
 }
 
 function mousePressed() {
+    if (overPanel(mouseX, mouseY)) return
+
     if (mode === "draw") {
         circuit.addPoint(mouseX, mouseY)
-    } else {
+    } else if (mode === "select") {
         selected = circuit.selectAt(mouseX, mouseY)
-    }
-}
-
-function keyPressed() {
-    if (key.toLowerCase() === "d") {
-        mode = "draw"
-        selected = null
-    } else if (key.toLowerCase() === "s") {
-        mode = "select"
-    } else if (key.toLowerCase() === "c") {
-        circuit.clear()
-        selected = null
-    } else if (key.toLowerCase() === "u") {
-        circuit.removeLastPoint()
-        if (selected && !circuit.segments.includes(selected)) {
-            selected == null
+    } else if (hasPath()) {
+        if (mode === "agent") {
+            agents.push(new Electron(mouseX, mouseY, 1))
+        } else if (mode === "emitter") {
+            emitter = new Emitter(mouseX, mouseY)
+        } else if (mode === "receptor") {
+            receptor = new Receptor(mouseX, mouseY)
         }
-        return false
-    } else if (key.toLowerCase() === "a") {
-        agents.push(new Electron(mouseX, mouseY, 1))
-    } else if (key.toLowerCase() === "e") {
-        emitter = new Emitter(mouseX, mouseY)
-    } else if (key.toLowerCase() === "r") {
-        receptor = new Receptor(mouseX, mouseY)
     }
-
 }
