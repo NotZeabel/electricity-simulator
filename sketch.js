@@ -5,6 +5,8 @@ let circuit
 let selected
 let mode
 let material;
+let emitter;
+let receptor;
 
 let agents
 
@@ -56,6 +58,17 @@ function draw() {
 
     circuit.display(selected, mode === "draw", mouseX, mouseY)
 
+    if (emitter) {
+        emitter.display();
+        if (emitter.emit()) {
+            agents.push(new Electron(emitter.pos.x, emitter.pos.y, emitter.voltage))
+        }
+    }
+
+    if (receptor) {
+        receptor.display();
+    }
+
     for (const a of agents) {
         a.follow(circuit)
         a.update()
@@ -93,6 +106,10 @@ function keyPressed() {
         return false
     } else if (key.toLowerCase() === "a") {
         agents.push(new Electron(mouseX, mouseY, 1))
+    } else if (key.toLowerCase() === "e") {
+        emitter = new Emitter(mouseX, mouseY)
+    } else if (key.toLowerCase() === "r") {
+        receptor = new Receptor(mouseX, mouseY)
     }
 
 }
