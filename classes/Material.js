@@ -18,16 +18,15 @@ class Material {
     display() {
 
     }
-    // Temporary. Should be separated into 3
-    calculateVariables() {
+    calculateResistance() {
         this.area = PI * (this.scaledDiameter / 2) ** 2; // Cross-sectional area
 
-        this.resistance = (this.resistivity * this.scaledLength) / this.area;
+        // Multiplied by 10 for better visualization
+        this.resistance = ((this.resistivity * this.scaledLength) / this.area) * 10;
+        return this.resistance;
+    }
+    calculateConductivity() {
         this.conductivity = 1 / this.resistivity;
-        let current = this.voltage / this.resistance;
-
-        // console.log("R =", (this.resistance).toExponential(2));
-        // console.log("σ =", (this.conductivity).toExponential(2));
-        // console.log("I =", current);
+        return this.conductivity;
     }
 }
