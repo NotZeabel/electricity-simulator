@@ -15,9 +15,14 @@ let resistance;
 let conductivity;
 let agents
 
+let sliderResistivity;
+let sliderDiameter;
+let sliderVoltage;
+
 async function setup() {
     let canvas = createCanvas(windowWidth, windowHeight);
     gui = createGUI("main-gui", canvas);
+    createSliders();
 
     bgColor = color(0, 0, 0);
     buttons = {}
@@ -30,28 +35,21 @@ async function setup() {
         gap: 8,
         count: 8
     }
+    
+    // Temporary, just for reference
+    let btn = createButton("Resistivity");
+    btn.position(270, 100);
+
+    let btn2 = createButton("Diameter");
+    btn2.position(270, 150);
+
+    let btn3 = createButton("Voltage");
+    btn3.position(270, 200);
 
     agents = []
     circuit = new Circuit(agents)
     selected = null
     mode = "draw"
-
-    /*
-    EXAMPLE METAL RESISTIVITIES
-    Silver: 1.59e-8
-    Copper: 1.68e-8
-    Gold: 2.44e-8
-    Zinc: 5.90e-8
-    Iron: 9.70e-8
-    Steel: 69.0e-8
-    Mercury 98.0e-8
-    */
-    material = new Material(200, 10, 1.68e-8, 0.01);
-    resistance = material.calculateResistance();
-    conductivity = material.calculateConductivity();
-
-    // console.log("Resistance   =", (resistance).toExponential(2));
-    // console.log("Conductivity =", (conductivity).toExponential(2));
 
     populateGUI();
     updateButtonStates(true)
@@ -160,13 +158,18 @@ function draw() {
 
     updateButtonStates()
 
+    material = new Material(200, sliderDiameter.value(), sliderResistivity.value(), sliderVoltage.value());
+    resistance = material.calculateResistance();
+    //console.log("Resistance =", (resistance).toExponential(2));
+    //conductivity = material.calculateConductivity();
+
     circuit.display(selected, mode === "draw", mouseX, mouseY)
     circuit.applyResistance(resistance);
 
     if (emitter) {
         emitter.display();
         if (emitter.emit()) {
-            agents.push(new Electron(emitter.pos.x, emitter.pos.y, emitter.voltage))
+            agents.push(new Electron(emitter.pos.x, emitter.pos.y, sliderVoltage.value() * 0.01))
         }
     }
 
@@ -197,7 +200,7 @@ function mousePressed() {
         selected = circuit.selectAt(mouseX, mouseY)
     } else if (hasPath()) {
         if (mode === "agent") {
-            agents.push(new Electron(mouseX, mouseY, 1))
+            agents.push(new Electron(mouseX, mouseY, sliderVoltage.value() * 0.01))
         } else if (mode === "emitter") {
             emitter = new Emitter(mouseX, mouseY)
         } else if (mode === "receptor") {
@@ -205,3 +208,28 @@ function mousePressed() {
         }
     }
 }
+
+function createSliders() {
+    sliderResistivity = createSlider(1.59e-8, 98.0e-8, 1.68e-8, 0.5e-8);
+    sliderResistivity.position(10, 100);
+    sliderResistivity.size(250);
+
+    // Higher diameter equals less resistance
+    sliderDiameter = createSlider(15, 200, 10, 1);
+    sliderDiameter.position(10, 150);
+    sliderDiameter.size(250);
+
+    sliderVoltage = createSlider(50, 300, 100, 50);
+    sliderVoltage.position(10, 200);
+    sliderVoltage.size(250);
+}
+/*
+    EXAMPLE METAL RESISTIVITIES
+    Silver: 1.59e-8
+    Copper: 1.68e-8
+    Gold: 2.44e-8
+    Zinc: 5.90e-8
+    Iron: 9.70e-8
+    Steel: 69.0e-8
+    Mercury 98.0e-8
+    */
