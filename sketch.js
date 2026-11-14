@@ -35,16 +35,6 @@ async function setup() {
         gap: 8,
         count: 8
     }
-    
-    // Temporary, just for reference
-    let btn = createButton("Resistivity");
-    btn.position(270, 100);
-
-    let btn2 = createButton("Diameter");
-    btn2.position(270, 150);
-
-    let btn3 = createButton("Voltage");
-    btn3.position(270, 200);
 
     agents = []
     circuit = new Circuit(agents)
@@ -159,12 +149,12 @@ function draw() {
     updateButtonStates()
 
     material = new Material(200, sliderDiameter.value(), sliderResistivity.value(), sliderVoltage.value());
+
     resistance = material.calculateResistance();
-    //console.log("Resistance =", (resistance).toExponential(2));
-    //conductivity = material.calculateConductivity();
+    circuit.applyResistance(resistance);
+    conductivity = material.calculateConductivity();
 
     circuit.display(selected, mode === "draw", mouseX, mouseY)
-    circuit.applyResistance(resistance);
 
     if (emitter) {
         emitter.display();
@@ -185,8 +175,15 @@ function draw() {
 
     noStroke()
     textAlign(LEFT, TOP)
-    textSize(13)
+    textSize(15);
     text("Mode: " + mode, panel.x, panel.y + panel.h + 12)
+
+    text("Resistivity: " + sliderResistivity.value().toExponential(2) + " ohms/meter", 270, 102);
+    text("Diameter: " + sliderDiameter.value() + " milimeters", 270, 152);
+    text("Voltage: " + sliderVoltage.value() + " volts", 270, 202);
+    
+    text("Resistance: " + resistance.toExponential(2) + " ohms", 75, 240);
+    text("Conductivity: " + conductivity.toExponential(2) + " siemens/meter", 40, 270);
 
     gui.draw()
 }
