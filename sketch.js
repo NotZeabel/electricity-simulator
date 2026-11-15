@@ -107,6 +107,27 @@ function populateGUI() {
     addButton("buttonReceptor", 6, "Receptor", () => {
         if (hasPath()) mode = "receptor"
     })
+
+    // For testing. All these buttons should be moved elsewhere
+    addButton("buttonSilver", 7, "Silver", () => {
+        sliderResistivity.value(1.59e-8);
+    })
+
+    addButton("buttonCopper", 8, "Copper", () => {
+        sliderResistivity.value(1.68e-8);
+    })
+
+    addButton("buttonGold", 9, "Gold", () => {
+        sliderResistivity.value(2.44e-8);
+    })
+
+    addButton("buttonZinc", 10, "Zinc", () => {
+        sliderResistivity.value(5.90e-8);
+    })
+
+    addButton("buttonIron", 11, "Iron", () => {
+        sliderResistivity.value(9.70e-8);
+    })
 }
 
 function updateButtonStates(force = false) {
@@ -207,7 +228,7 @@ function mousePressed() {
 }
 
 function createSliders() {
-    sliderResistivity = createSlider(1.59e-8, 98.0e-8, 1.68e-8, 0.5e-8);
+    sliderResistivity = createSlider(1.59e-8, 98.0e-8, 1.68e-8, 0.2e-8);
     sliderResistivity.position(10, 100);
     sliderResistivity.size(250);
 
@@ -220,13 +241,3 @@ function createSliders() {
     sliderVoltage.position(10, 200);
     sliderVoltage.size(250);
 }
-/*
-    EXAMPLE METAL RESISTIVITIES
-    Silver: 1.59e-8
-    Copper: 1.68e-8
-    Gold: 2.44e-8
-    Zinc: 5.90e-8
-    Iron: 9.70e-8
-    Steel: 69.0e-8
-    Mercury 98.0e-8
-    */
