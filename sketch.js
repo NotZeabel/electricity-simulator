@@ -236,7 +236,7 @@ function mousePressed() {
 }
 
 function createSliders() {
-    sliderResistivity = createSlider(1.59e-8, 98.0e-8, 1.68e-8, 0.2e-8);
+    sliderResistivity = createSlider(1.59e-8, 98.0e-8, 1.68e-8, 0.01e-8);
     sliderResistivity.position(10, 100);
     sliderResistivity.size(250);
 
