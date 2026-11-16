@@ -21,8 +21,7 @@ class Material {
     calculateResistance() {
         this.area = PI * (this.scaledDiameter / 2) ** 2; // Cross-sectional area
 
-        // Multiplied by 10 for better visualization
-        this.resistance = ((this.resistivity * this.scaledLength) / this.area) * 10;
+        this.resistance = ((this.resistivity * this.scaledLength) / this.area);
         return this.resistance;
     }
     calculateConductivity() {

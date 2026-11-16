@@ -195,15 +195,15 @@ function populateGUI() {
     layout.materialTitle = y + 4
     y += panel.title + 4
 
-    addButton("buttonSilver", y, 0, "Silver", () => sliderResistivity.value(1.59e-8))
-    addButton("buttonCopper", y, 1, "Copper", () => sliderResistivity.value(1.68e-8))
+    addButton("buttonCopper", y, 0, "Copper", () => sliderResistivity.value(1.68e-8))
+    addButton("buttonLead", y, 1, "Lead", () => sliderResistivity.value(22.0e-8)) // Plomo
     y += rowH
 
-    addButton("buttonGold", y, 0, "Gold", () => sliderResistivity.value(2.44e-8))
-    addButton("buttonZinc", y, 1, "Zinc", () => sliderResistivity.value(5.90e-8))
+    addButton("buttonTitanium", y, 0, "Titanium", () => sliderResistivity.value(42.0e-8))
+    addButton("buttonMercury", y, 1, "Mercury", () => sliderResistivity.value(98.0e-8))
     y += rowH
 
-    addButton("buttonIron", y, 0, "Iron", () => sliderResistivity.value(9.70e-8))
+    addButton("buttonPlutonium", y, 0, "Plutonium", () => sliderResistivity.value(146e-8))
     y += rowH
 
     // ----- Sliders debajo de los botones -----
@@ -239,7 +239,7 @@ function drawPanel() {
     
     const s = layout.slidersTop
     fill(255)
-    textSize(13)
+    textSize(15)
     text("Resistivity: " + sliderResistivity.value().toExponential(2) + " Ω/m", panel.x, s)
     text("Diameter: " + sliderDiameter.value() + " mm", panel.x, s + 46)
     text("Voltage: " + sliderVoltage.value() + " V", panel.x, s + 92)
@@ -334,14 +334,14 @@ function mousePressed() {
 }
 
 function createSliders() {
-    sliderResistivity = createSlider(1.59e-8, 98.0e-8, 1.68e-8, 0.01e-8);
+    sliderResistivity = createSlider(1.68e-8, 200e-8, 1.68e-8, 0.01e-8);
     sliderResistivity.size(panel.width - 2 * panel.x);
 
     
-    sliderDiameter = createSlider(15, 200, 10, 1);
+    sliderDiameter = createSlider(3.50, 25, 5, 0.25);
     sliderDiameter.size(panel.width - 2 * panel.x);
 
-    sliderVoltage = createSlider(50, 300, 100, 50);
+    sliderVoltage = createSlider(125, 300, 125, 25);
     sliderVoltage.size(panel.width - 2 * panel.x);
 }
 
