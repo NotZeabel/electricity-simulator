@@ -185,13 +185,21 @@ function draw() {
     }
 
     if (receptor) {
-        receptor.display();
+            receptor.display();
     }
 
-    for (const a of agents) {
+    for (let i = agents.length - 1; i >= 0; i--) {
+        let a = agents[i];
         a.follow(circuit)
         a.update()
         a.display()
+
+        if (receptor) {
+            if (receptor.touch(a)) {
+                receptor.glow();
+                agents.splice(i, 1);
+            }
+        }
     }
 
     noStroke()

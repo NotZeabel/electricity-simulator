@@ -4,12 +4,13 @@ class Emitter {
         this.voltage = 2;
         this.lastEmission = 0;
         this.emissionInterval = 200;
+        this.radius = 5;
     }
 
     display() {
         noStroke();
         fill(255);
-        ellipse(this.pos.x, this.pos.y, 5 * 2);
+        ellipse(this.pos.x, this.pos.y, this.radius * 2);
     }
 
     // Emits the voltage to the circuit
