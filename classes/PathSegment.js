@@ -1,5 +1,5 @@
 class PathSegment {
-    constructor(start, end, width = 14) {
+    constructor(start, end, width = 30) {
         this.start = start
         this.end = end
         this.width = width

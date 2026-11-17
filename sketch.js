@@ -280,7 +280,7 @@ function draw() {
     if (emitter) {
         emitter.display();
         if (emitter.emit()) {
-            agents.push(new Electron(emitter.pos.x, emitter.pos.y, sliderVoltage.value() * 0.01))
+            agents.push(new Electron(emitter.pos.x, emitter.pos.y, sliderVoltage.value() * 0.02))
         }
     }
 
@@ -324,7 +324,7 @@ function mousePressed() {
         selected = circuit.selectAt(mouseX, mouseY)
     } else if (hasPath()) {
         if (mode === "agent") {
-            agents.push(new Electron(mouseX, mouseY, sliderVoltage.value() * 0.01))
+            agents.push(new Electron(mouseX, mouseY, sliderVoltage.value() * 0.02))
         } else if (mode === "emitter") {
             emitter = new Emitter(mouseX, mouseY)
         } else if (mode === "receptor") {
@@ -341,7 +341,7 @@ function createSliders() {
     sliderDiameter = createSlider(3.50, 25, 5, 0.25);
     sliderDiameter.size(panel.width - 2 * panel.x);
 
-    sliderVoltage = createSlider(125, 300, 125, 25);
+    sliderVoltage = createSlider(100, 300, 100, 25);
     sliderVoltage.size(panel.width - 2 * panel.x);
 }
 

@@ -4,12 +4,12 @@ class Electron {
         this.vel = createVector(1, 1);
         this.accel = createVector(0, 0);
         this.mass = mass < 0 ? 0 : mass;
-        this.radius = sqrt(this.mass / PI) * 5;
+        this.radius = sqrt(this.mass / PI) * 4;
         this.c = color(245, 217, 78);
 
         this.followLookahead = 25
         this.maxSpeed = 5
-        this.maxSteeringForce = 1
+        // this.maxSteeringForce = 1
         this.segment = 0
     }
     display() {
@@ -125,7 +125,7 @@ class Electron {
         desired.mult(this.maxSpeed)
 
         let steer = p5.Vector.sub(desired, this.vel)
-        steer.limit(this.maxSteeringForce)
+        // steer.limit(this.maxSteeringForce)
 
         this.addForce(steer)
     }
