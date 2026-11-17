@@ -291,7 +291,7 @@ function drawStatus() {
 
     // Qué están editando los sliders de resistividad y diámetro
     const idx = circuit.segments.indexOf(selected);
-    const editing = idx >= 0 ? "Segment " + (idx + 1) : "all segments";
+    const editing = idx >= 0 ? "Segment " + (idx + 1) : "All segments";
     fill(160, 175, 200);
     textSize(15);
     text("Sliders edit: " + editing, panel.width + 160, 17);
