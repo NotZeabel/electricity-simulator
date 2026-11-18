@@ -10,7 +10,7 @@ let receptor;
 
 let resistance;
 let conductivity;
-let agents;
+let electrons;
 
 let sliderResistivity;
 let sliderDiameter;
@@ -39,8 +39,8 @@ async function setup() {
         width: 282, // ancho total del panel lateral (zona donde no se dibuja)
     };
 
-    agents = [];
-    circuit = new Circuit(agents);
+    electrons = [];
+    circuit = new Circuit(electrons);
     setSelected(null);
     mode = "draw";
 
@@ -118,7 +118,7 @@ function buttonAt(px, py) {
 const MODE_BY_BUTTON = {
     buttonDraw: "draw",
     buttonSelect: "select",
-    buttonAgent: "agent",
+    buttonElectron: "electron",
     buttonEmitter: "emitter",
     buttonReceptor: "receptor",
 };
@@ -130,7 +130,7 @@ function drawButtons() {
         const b = buttons[name];
         const active = MODE_BY_BUTTON[name] === mode;
 
-        // Color base: verde = modo activo, amarillo = Agent, azul = el resto
+        // Color base: verde = modo activo, amarillo = Electron, azul = el resto
         let c;
         if (active) c = color(150, 240, 150);
         else c = color(160, 185, 255);
@@ -157,18 +157,18 @@ function drawButtons() {
 }
 
 function setMode(newMode) {
-    if (["agent", "emitter", "receptor"].includes(newMode) && !hasPath()) {
-        showHint("Primero dibujá el cable:\nmodo Draw + 2 clics en la zona negra");
+    if (["electron", "emitter", "receptor"].includes(newMode) && !hasPath()) {
+        showHint("First draw the cable:\nDraw mode + 2 clicks on the black zone");
         return;
     }
 
     mode = newMode;
     if (mode === "draw") setSelected(null);
 
-    if (mode === "agent")
-        showHint("Hacé clic sobre el cable,\ncerca del primer punto");
-    if (mode === "emitter") showHint("Hacé clic al inicio del cable");
-    if (mode === "receptor") showHint("Hacé clic al final del cable");
+    if (mode === "electron")
+        showHint("Click the screen");
+    if (mode === "emitter") showHint("Click the start of the cable");
+    if (mode === "receptor") showHint("Click the end of the cable");
 }
 
 function populateGUI() {
@@ -189,17 +189,17 @@ function populateGUI() {
             (selected && !circuit.segments.includes(selected)) ||
             circuit.segments.length <= 0
         ) {
-            agents = [];
+            electrons = [];
             emitter = null;
             receptor = null;
             setSelected(null);
         }
-        if (!hasPath() && ["agent", "emitter", "receptor"].includes(mode))
+        if (!hasPath() && ["electron", "emitter", "receptor"].includes(mode))
             setMode("draw");
     });
     addButton("buttonClear", y, 1, "Clear", () => {
         circuit.clear();
-        agents = [];
+        electrons = [];
         emitter = null;
         receptor = null;
         setSelected(null);
@@ -211,7 +211,7 @@ function populateGUI() {
     layout.electronTitle = y + 4;
     y += panel.title + 4;
 
-    addButton("buttonAgent", y, 0, "Agent", () => setMode("agent"), 2).bold =
+    addButton("buttonElectron", y, 0, "Electron", () => setMode("electron"), 2).bold =
         true;
     y += rowH;
 
@@ -257,8 +257,8 @@ function drawPanel() {
     textAlign(LEFT, TOP);
     textStyle(BOLD);
     textSize(13);
-    text("CIRCUITO", panel.x, layout.circuitTitle + 6);
-    text("ELECTRONES", panel.x, layout.electronTitle + 6);
+    text("CIRCUIT", panel.x, layout.circuitTitle + 6);
+    text("ELECTRONS", panel.x, layout.electronTitle + 6);
     text("MATERIAL", panel.x, layout.materialTitle + 6);
     textStyle(NORMAL);
 
@@ -321,14 +321,14 @@ function draw() {
         seg.updateMaterial(circuit.length);
     }
 
-    circuit.applyResistance(agents);
+    circuit.applyResistance(electrons);
 
     circuit.display(selected, mode === "draw", mouseX, mouseY);
 
     if (emitter) {
         emitter.display();
         if (emitter.emit()) {
-            agents.push(
+            electrons.push(
                 new Electron(
                     emitter.pos.x,
                     emitter.pos.y,
@@ -342,8 +342,8 @@ function draw() {
         receptor.display();
     }
 
-    for (let i = agents.length - 1; i >= 0; i--) {
-        let a = agents[i];
+    for (let i = electrons.length - 1; i >= 0; i--) {
+        let a = electrons[i];
         a.follow(circuit);
         a.update();
         a.display();
@@ -351,7 +351,7 @@ function draw() {
         if (receptor) {
             if (receptor.touch(a)) {
                 receptor.glow();
-                agents.splice(i, 1);
+                electrons.splice(i, 1);
             }
         }
     }
@@ -380,8 +380,8 @@ function mousePressed() {
     } else if (mode === "select") {
         setSelected(circuit.selectAt(mouseX, mouseY));
     } else if (hasPath()) {
-        if (mode === "agent") {
-            agents.push(new Electron(mouseX, mouseY, sliderVoltage.value() * 0.02));
+        if (mode === "electron") {
+            electrons.push(new Electron(mouseX, mouseY, sliderVoltage.value() * 0.02));
         } else if (mode === "emitter") {
             emitter = new Emitter(mouseX, mouseY);
         } else if (mode === "receptor") {
