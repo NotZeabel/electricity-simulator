@@ -9,7 +9,7 @@ class Electron {
 
         this.followLookahead = 25
         this.maxSpeed = 5
-        this.maxSteeringForce = 1
+        // this.maxSteeringForce = 1
         this.segment = 0
     }
     display() {
@@ -34,10 +34,6 @@ class Electron {
         }
         this.accel.mult(0);
         this.pos.add(this.vel);
-    }
-    // Keeps the electron inside the circuit
-    borders() {
-
     }
     addForce(force) {
         let finalForce = p5.Vector.div(force, this.mass);
@@ -125,7 +121,7 @@ class Electron {
         desired.mult(this.maxSpeed)
 
         let steer = p5.Vector.sub(desired, this.vel)
-        steer.limit(this.maxSteeringForce)
+        // steer.limit(this.maxSteeringForce)
 
         this.addForce(steer)
     }

@@ -1,9 +1,8 @@
 class Material {
-    constructor(length, diameter, resistivity, voltage) {
+    constructor(length, diameter, resistivity) {
         this.length = length; // Length in pixels
         this.diameter = diameter; // Diameter in pixels
         this.resistivity = resistivity;
-        this.voltage = voltage;
 
         // Two scales because cables are very long and very thin
         this.xScale = 0.01; // Centimeters per pixel
@@ -15,14 +14,13 @@ class Material {
         this.resistance = 0;
         this.conductivity = 0;
     }
-    display() {
-
-    }
     calculateResistance() {
         this.area = PI * (this.scaledDiameter / 2) ** 2; // Cross-sectional area
 
-        // Multiplied by 10 for better visualization
-        this.resistance = ((this.resistivity * this.scaledLength) / this.area) * 10;
+        this.resistance = ((this.resistivity * this.scaledLength) / this.area);
+        // Values greater than this bug the electrons
+        if (this.resistance > 1.50e+0)
+            this.resistance = 1.50e+0;
         return this.resistance;
     }
     calculateConductivity() {
