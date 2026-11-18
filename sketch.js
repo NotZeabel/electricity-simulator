@@ -19,12 +19,18 @@ let hint = "";
 let hintTime = 0;
 
 let layout = {};
+var imgElectron;
+var imgEmitter;
+var imgReceptor;
 
 async function setup() {
     createCanvas(windowWidth, windowHeight);
 
     bgColor = color(0, 0, 0);
     buttons = {};
+    imgElectron = await loadImage("images/electron.png");
+    imgEmitter = await loadImage("images/emitter.png");
+    imgReceptor = await loadImage("images/receptor.png");
 
     // ===== TAMAÑO Y POSICIÓN DE LOS BOTONES =====
 
@@ -339,7 +345,7 @@ function draw() {
     }
 
     if (receptor) {
-        receptor.display();
+        receptor.display(sliderVoltage.value());
     }
 
     for (let i = electrons.length - 1; i >= 0; i--) {

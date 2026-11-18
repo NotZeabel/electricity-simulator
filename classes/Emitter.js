@@ -3,14 +3,13 @@ class Emitter {
         this.pos = createVector(x, y);
         this.voltage = 2;
         this.lastEmission = 0;
-        this.emissionInterval = 200;
-        this.radius = 5;
+        this.emissionInterval = 1500;
+        this.size = 12;
     }
 
     display() {
-        noStroke();
-        fill(255);
-        ellipse(this.pos.x, this.pos.y, this.radius * 2);
+        imageMode(CENTER);
+        image(imgEmitter, this.pos.x, this.pos.y, this.size*10, this.size*10);
     }
 
     // Emits the voltage to the circuit

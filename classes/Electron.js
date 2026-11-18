@@ -9,22 +9,14 @@ class Electron {
 
         this.followLookahead = 25
         this.maxSpeed = 5
-        // this.maxSteeringForce = 1
         this.segment = 0
     }
     display() {
-        stroke(this.c);
-        strokeWeight(this.radius * 2);
-
         push();
         translate(this.pos.x, this.pos.y);
         rotate(this.vel.heading());
-
-        beginShape();
-        vertex(-this.radius / 3, -this.radius / 2);
-        vertex(-this.radius / 3, this.radius / 2);
-        vertex(2 * this.radius / 3, 0);
-        endShape(CLOSE);
+        imageMode(CENTER);
+        image(imgElectron, 0, 0, this.radius*10, this.radius*10);
         pop();
     }
     update() {
@@ -121,7 +113,6 @@ class Electron {
         desired.mult(this.maxSpeed)
 
         let steer = p5.Vector.sub(desired, this.vel)
-        // steer.limit(this.maxSteeringForce)
 
         this.addForce(steer)
     }
