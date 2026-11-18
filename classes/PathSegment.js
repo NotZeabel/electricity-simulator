@@ -16,12 +16,11 @@ class PathSegment {
     return map(this.diameter, 3.5, 25, 20, 50);
   }
 
-  updateMaterial(circuitLength, voltage) {
+  updateMaterial(circuitLength) {
     const material = new Material(
       circuitLength,
       this.diameter,
       this.resistivity,
-      voltage,
     );
 
     this.resistance = material.calculateResistance();

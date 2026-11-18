@@ -1,9 +1,8 @@
 class Material {
-    constructor(length, diameter, resistivity, voltage) {
+    constructor(length, diameter, resistivity) {
         this.length = length; // Length in pixels
         this.diameter = diameter; // Diameter in pixels
         this.resistivity = resistivity;
-        this.voltage = voltage;
 
         // Two scales because cables are very long and very thin
         this.xScale = 0.01; // Centimeters per pixel

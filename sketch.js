@@ -312,14 +312,13 @@ function draw() {
         circuit.length,
         sliderDiameter.value(),
         sliderResistivity.value(),
-        sliderVoltage.value(),
     );
 
     resistance = material.calculateResistance();
     conductivity = material.calculateConductivity();
 
     for (const seg of circuit.segments) {
-        seg.updateMaterial(circuit.length, sliderVoltage.value());
+        seg.updateMaterial(circuit.length);
     }
 
     circuit.applyResistance(agents);
