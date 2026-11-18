@@ -19,8 +19,10 @@ class Circuit {
             if (dist(x, y, last.x, last.y) < 6) return;
 
             const point = createVector(x, y);
+            let seg = new PathSegment(last, point, resistivity, diameter);
+            this.segments.push(seg);
 
-            this.segments.push(new PathSegment(last, point, resistivity, diameter));
+            this.length += seg.length; // Adds the segment's length to the circuit's
             this.points.push(point);
         } else {
             this.points.push(createVector(x, y));
@@ -31,7 +33,9 @@ class Circuit {
         if (this.points.length === 0) return;
 
         this.points.pop();
-        this.segments.pop();
+        let last = this.segments.pop();
+        // Substracts the last segment's length from the circuit's
+        this.length -= last.length;
     }
 
     clear() {
@@ -82,7 +86,8 @@ class Circuit {
             const seg = this.segments[e.segment];
 
             if (seg) {
-                e.applyDrag(seg.resistance);
+                // Reduced to keep the electrons from bugging 
+                e.applyDrag(seg.resistance * 0.4);
             }
         }
     }

@@ -3,6 +3,8 @@ class PathSegment {
     this.start = start;
     this.end = end;
 
+    this.length = p5.Vector.dist(this.start, this.end); // Used on Circuit
+
     this.resistivity = resistivity;
     this.diameter = diameter;
 
@@ -14,9 +16,9 @@ class PathSegment {
     return map(this.diameter, 3.5, 25, 20, 50);
   }
 
-  updateMaterial(voltage) {
+  updateMaterial(circuitLength, voltage) {
     const material = new Material(
-      200,
+      circuitLength,
       this.diameter,
       this.resistivity,
       voltage,

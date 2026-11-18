@@ -224,14 +224,14 @@ function populateGUI() {
     y += panel.title + 4;
 
     addButton("buttonCopper", y, 0, "Copper", () => setResistivity(1.68e-8));
-    addButton("buttonLead", y, 1, "Lead", () => setResistivity(22.0e-8)); // Plomo
+    addButton("buttonZinc", y, 1, "Zinc", () => setResistivity(5.90e-8));
+    y += rowH;
+
+    addButton("buttonIron", y, 0, "Iron", () => setResistivity(9.70e-8));
+    addButton("buttonMercury", y, 1, "Lead", () => setResistivity(22.0e-8)); // Plomo
     y += rowH;
 
     addButton("buttonTitanium", y, 0, "Titanium", () => setResistivity(42.0e-8));
-    addButton("buttonMercury", y, 1, "Mercury", () => setResistivity(98.0e-8));
-    y += rowH;
-
-    addButton("buttonPlutonium", y, 0, "Plutonium", () => setResistivity(146e-8));
     y += rowH;
 
     // ----- Sliders debajo de los botones -----
@@ -280,6 +280,8 @@ function drawPanel() {
         panel.x,
         s + 160,
     );
+    text("Length: " + floor(material.scaledLength) + " cm", 
+        panel.x, s + 180);
 }
 
 function drawStatus() {
@@ -307,7 +309,7 @@ function draw() {
     background(bgColor);
 
     material = new Material(
-        200,
+        circuit.length,
         sliderDiameter.value(),
         sliderResistivity.value(),
         sliderVoltage.value(),
@@ -317,7 +319,7 @@ function draw() {
     conductivity = material.calculateConductivity();
 
     for (const seg of circuit.segments) {
-        seg.updateMaterial(sliderVoltage.value());
+        seg.updateMaterial(circuit.length, sliderVoltage.value());
     }
 
     circuit.applyResistance(agents);
@@ -404,7 +406,7 @@ function setResistivity(value) {
 }
 
 function createSliders() {
-    sliderResistivity = createSlider(1.68e-8, 200e-8, 1.68e-8, 0.01e-8);
+    sliderResistivity = createSlider(1.68e-8, 42.0e-8, 1.68e-8, 0.01e-8);
     sliderResistivity.size(panel.width - 2 * panel.x);
     sliderResistivity.input(applySlidersToSegments);
 

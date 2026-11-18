@@ -4,7 +4,7 @@ class Electron {
         this.vel = createVector(1, 1);
         this.accel = createVector(0, 0);
         this.mass = mass < 0 ? 0 : mass;
-        this.radius = sqrt(this.mass / PI) * 4;
+        this.radius = sqrt(this.mass / PI) * 5;
         this.c = color(245, 217, 78);
 
         this.followLookahead = 25
@@ -12,7 +12,6 @@ class Electron {
         // this.maxSteeringForce = 1
         this.segment = 0
     }
-
     display() {
         stroke(this.c);
         strokeWeight(this.radius * 2);
@@ -28,7 +27,6 @@ class Electron {
         endShape(CLOSE);
         pop();
     }
-
     update() {
         this.vel.add(this.accel);
         if (this.vel.mag() > this.maxSpeed) {
@@ -37,17 +35,10 @@ class Electron {
         this.accel.mult(0);
         this.pos.add(this.vel);
     }
-
-    // Keeps the electron inside the circuit
-    borders() {
-
-    }
-
     addForce(force) {
         let finalForce = p5.Vector.div(force, this.mass);
         this.accel.add(finalForce);
     }
-
     applyDrag(d) {
         let drag = this.vel.copy();
         drag.normalize();
