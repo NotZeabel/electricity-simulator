@@ -5,8 +5,8 @@ let circuit;
 let selected;
 let mode;
 let material;
-let emitter;
-let receptor;
+let emitters;
+let receptors;
 
 let resistance;
 let conductivity;
@@ -45,6 +45,8 @@ async function setup() {
         width: 282, // ancho total del panel lateral (zona donde no se dibuja)
     };
 
+    receptors = [];
+    emitters = [];
     electrons = [];
     circuit = new Circuit(electrons);
     setSelected(null);
@@ -189,25 +191,34 @@ function populateGUI() {
     addButton("buttonSelect", y, 1, "Select", () => setMode("select"));
     y += rowH;
 
-    addButton("buttonUndo", y, 0, "Undo", () => {
+    addButton("buttonUndoSegment", y, 0, "Undo segment", () => {
         circuit.removeLastPoint();
         if (
             (selected && !circuit.segments.includes(selected)) ||
             circuit.segments.length <= 0
         ) {
             electrons = [];
-            emitter = null;
-            receptor = null;
+            emitters = [];
+            receptors = [];
             setSelected(null);
         }
         if (!hasPath() && ["electron", "emitter", "receptor"].includes(mode))
             setMode("draw");
     });
+    addButton("buttonUndoReceptor", y, 1, "Undo receptor", () => {
+        if (receptors.length) // Using != 0 is unnecessary, apparently
+            receptors.pop();
+    });
+    y += rowH;
+    addButton("buttonUndoEmitter", y, 0, "Undo emitter", () => {
+        if (emitters.length) // != 0
+            emitters.pop();
+    });
     addButton("buttonClear", y, 1, "Clear", () => {
         circuit.clear();
         electrons = [];
-        emitter = null;
-        receptor = null;
+        emitters = [];
+        receptors = [];
         setSelected(null);
         setMode("draw");
     });
@@ -331,21 +342,24 @@ function draw() {
 
     circuit.display(selected, mode === "draw", mouseX, mouseY);
 
-    if (emitter) {
-        emitter.display();
-        if (emitter.emit()) {
-            electrons.push(
-                new Electron(
-                    emitter.pos.x,
-                    emitter.pos.y,
-                    sliderVoltage.value() * 0.02,
-                ),
-            );
+    if (emitters.length) { // != 0
+        for (let e of emitters) {
+            e.display();
+            if (e.emit()) {
+                electrons.push(
+                    new Electron(
+                        e.pos.x,
+                        e.pos.y,
+                        sliderVoltage.value() * 0.02,
+                    ),
+                );
+            }
         }
     }
 
-    if (receptor) {
-        receptor.display(sliderVoltage.value());
+    if (receptors.length) { // != 0
+        for (let r of receptors)
+            r.display(sliderVoltage.value());
     }
 
     for (let i = electrons.length - 1; i >= 0; i--) {
@@ -354,10 +368,12 @@ function draw() {
         a.update();
         a.display();
 
-        if (receptor) {
-            if (receptor.touch(a)) {
-                receptor.glow();
-                electrons.splice(i, 1);
+        if (receptors.length) { // != 0
+            for (let r of receptors) {
+                if (r.touch(a)) {
+                    r.glow();
+                    electrons.splice(i, 1);
+                }
             }
         }
     }
@@ -389,9 +405,9 @@ function mousePressed() {
         if (mode === "electron") {
             electrons.push(new Electron(mouseX, mouseY, sliderVoltage.value() * 0.02));
         } else if (mode === "emitter") {
-            emitter = new Emitter(mouseX, mouseY);
+            emitters.push(new Emitter(mouseX, mouseY));
         } else if (mode === "receptor") {
-            receptor = new Receptor(mouseX, mouseY);
+            receptors.push(new Receptor(mouseX, mouseY));
         }
     }
 }
