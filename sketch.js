@@ -15,6 +15,7 @@ let electrons;
 let sliderResistivity;
 let sliderDiameter;
 let sliderVoltage;
+let sliderInterval;
 let hint = "";
 let hintTime = 0;
 
@@ -289,16 +290,17 @@ function drawPanel() {
     );
     text("Diameter: " + sliderDiameter.value() + " mm", panel.x, s + 46);
     text("Voltage: " + sliderVoltage.value() + " V (global)", panel.x, s + 92);
+    text("Electron emission interval: " + sliderInterval.value() + " ms", panel.x, s + 138);
 
     fill(200);
-    text("Resistance: " + resistance.toExponential(2) + " Ω", panel.x, s + 140);
+    text("Resistance: " + resistance.toExponential(2) + " Ω", panel.x, s + 180);
     text(
         "Conductivity: " + conductivity.toExponential(2) + " S/m",
         panel.x,
-        s + 160,
+        s + 200,
     );
     text("Length: " + floor(material.scaledLength) + " cm", 
-        panel.x, s + 180);
+        panel.x, s + 220);
 }
 
 function drawStatus() {
@@ -341,16 +343,16 @@ function draw() {
     circuit.applyResistance(electrons);
 
     circuit.display(selected, mode === "draw", mouseX, mouseY);
-
     if (emitters.length) { // != 0
         for (let e of emitters) {
+            e.update(sliderInterval.value(), sliderVoltage.value());
             e.display();
             if (e.emit()) {
                 electrons.push(
                     new Electron(
                         e.pos.x,
                         e.pos.y,
-                        sliderVoltage.value() * 0.02,
+                        e.voltage * 0.02,
                     ),
                 );
             }
@@ -405,7 +407,7 @@ function mousePressed() {
         if (mode === "electron") {
             electrons.push(new Electron(mouseX, mouseY, sliderVoltage.value() * 0.02));
         } else if (mode === "emitter") {
-            emitters.push(new Emitter(mouseX, mouseY));
+            emitters.push(new Emitter(mouseX, mouseY, sliderVoltage.value(), sliderInterval.value()));
         } else if (mode === "receptor") {
             receptors.push(new Receptor(mouseX, mouseY));
         }
@@ -437,6 +439,9 @@ function createSliders() {
 
     sliderVoltage = createSlider(100, 300, 100, 25);
     sliderVoltage.size(panel.width - 2 * panel.x);
+
+    sliderInterval = createSlider(200, 1500, 500, 100);
+    sliderInterval.size(panel.width - 2 * panel.x);
 }
 
 // Coloca los sliders debajo de los botones, en el panel lateral
@@ -445,4 +450,5 @@ function positionSliders() {
     sliderResistivity.position(panel.x, s + 18);
     sliderDiameter.position(panel.x, s + 64);
     sliderVoltage.position(panel.x, s + 110);
+    sliderInterval.position(panel.x, s + 156);
 }

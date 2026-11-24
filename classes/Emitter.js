@@ -1,10 +1,14 @@
 class Emitter {
-    constructor(x, y) {
+    constructor(x, y, voltage, emissionInterval) {
         this.pos = createVector(x, y);
-        this.voltage = 2;
+        this.voltage = voltage;
         this.lastEmission = 0;
-        this.emissionInterval = 1500;
+        this.emissionInterval = emissionInterval;
         this.size = 12;
+    }
+    update(emissionInterval, voltage) {
+        this.emissionInterval = emissionInterval;
+        this.voltage = voltage;
     }
 
     display() {
