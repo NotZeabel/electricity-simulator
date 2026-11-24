@@ -2,17 +2,18 @@ class Receptor {
     constructor(x, y) {
         this.pos = createVector(x, y);
         this.size = 15;
+        this.glowSize;
         this.maxGlow = 255;
         this.glowIntensity = 0;
-        this.glowDecay = 2;
+        this.glowDecay = 5;
     }
-    display(voltage) { // This looks pretty cursed, not gonna lie
+    display() {
         noStroke();
         imageMode(CENTER);
         image(imgReceptor, this.pos.x, this.pos.y, this.size*10, this.size*17);
         if (this.glowIntensity > 0) {
-            fill(247, 232, 64, this.glowIntensity * 0.6);
-            ellipse(this.pos.x, this.pos.y - 50, this.size * (voltage * 0.2));
+            fill(247, 232, 64, this.glowIntensity * 0.5);
+            ellipse(this.pos.x, this.pos.y - 50, this.size * this.glowSize);
         }   
         this.glowIntensity = max(0, this.glowIntensity - this.glowDecay);
     }
@@ -22,7 +23,10 @@ class Receptor {
         return dif.mag() < this.size + e.radius;
     }
 
-    glow() {
+    // Receives the electron's size so the receptor can glow
+    // more according to it
+    glow(electronSize) {
         this.glowIntensity = this.maxGlow;
+        this.glowSize = electronSize * 6;
     }
 }

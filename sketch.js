@@ -290,7 +290,7 @@ function drawPanel() {
     );
     text("Diameter: " + sliderDiameter.value() + " mm", panel.x, s + 46);
     text("Voltage: " + sliderVoltage.value() + " V (global)", panel.x, s + 92);
-    text("Electron emission interval: " + sliderInterval.value() + " ms", panel.x, s + 138);
+    text("Electron emission interval: " + sliderInterval.value() / 1000 + " s", panel.x, s + 138);
 
     fill(200);
     text("Resistance: " + resistance.toExponential(2) + " Ω", panel.x, s + 180);
@@ -361,7 +361,7 @@ function draw() {
 
     if (receptors.length) { // != 0
         for (let r of receptors)
-            r.display(sliderVoltage.value());
+            r.display();
     }
 
     for (let i = electrons.length - 1; i >= 0; i--) {
@@ -373,7 +373,7 @@ function draw() {
         if (receptors.length) { // != 0
             for (let r of receptors) {
                 if (r.touch(a)) {
-                    r.glow();
+                    r.glow(a.radius);
                     electrons.splice(i, 1);
                 }
             }
