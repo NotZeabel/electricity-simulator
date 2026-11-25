@@ -26,6 +26,7 @@ var imgReceptor;
 
 async function setup() {
     createCanvas(windowWidth, windowHeight);
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
 
     bgColor = color(0, 0, 0);
     buttons = {};
@@ -172,7 +173,10 @@ function setMode(newMode) {
     }
 
     mode = newMode;
-    if (mode === "draw") setSelected(null);
+    if (mode === "draw") {
+        setSelected(null);
+        showHint("Click to place points. Click a point or cable to branch.\nNew circuit (or N) starts a separate one");
+    }
 
     if (mode === "electron")
         showHint("Click the screen");
@@ -192,8 +196,11 @@ function populateGUI() {
     addButton("buttonSelect", y, 1, "Select", () => setMode("select"));
     y += rowH;
 
+    addButton("buttonNewCircuit", y, 0, "New circuit", () => startNewCircuit(), 2);
+    y += rowH;
+
     addButton("buttonUndoSegment", y, 0, "Undo segment", () => {
-        circuit.removeLastPoint();
+        circuit.removeLastSegment();
         if (
             (selected && !circuit.segments.includes(selected)) ||
             circuit.segments.length <= 0
@@ -241,15 +248,15 @@ function populateGUI() {
     layout.materialTitle = y + 4;
     y += panel.title + 4;
 
-    addButton("buttonCopper", y, 0, "Copper", () => setResistivity(1.68e-8));
-    addButton("buttonZinc", y, 1, "Zinc", () => setResistivity(5.90e-8));
+    addButton("buttonCopper", y, 0, "Copper", () => setResistivity(MATERIALS.copper.resistivity));
+    addButton("buttonZinc", y, 1, "Zinc", () => setResistivity(MATERIALS.zinc.resistivity));
     y += rowH;
 
-    addButton("buttonIron", y, 0, "Iron", () => setResistivity(9.70e-8));
-    addButton("buttonMercury", y, 1, "Lead", () => setResistivity(22.0e-8)); // Plomo
+    addButton("buttonIron", y, 0, "Iron", () => setResistivity(MATERIALS.iron.resistivity));
+    addButton("buttonMercury", y, 1, "Lead", () => setResistivity(MATERIALS.lead.resistivity)); // Plomo
     y += rowH;
 
-    addButton("buttonTitanium", y, 0, "Titanium", () => setResistivity(42.0e-8));
+    addButton("buttonTitanium", y, 0, "Titanium", () => setResistivity(MATERIALS.titanium.resistivity));
     y += rowH;
 
     // ----- Sliders debajo de los botones -----
@@ -299,7 +306,7 @@ function drawPanel() {
         panel.x,
         s + 200,
     );
-    text("Length: " + floor(material.scaledLength) + " cm", 
+    text("Length: " + floor(material.scaledLength) + " cm",
         panel.x, s + 220);
 }
 
@@ -326,6 +333,9 @@ function drawStatus() {
 
 function draw() {
     background(bgColor);
+
+    circuit.updateLength();
+    if (selected && !circuit.segments.includes(selected)) setSelected(null);
 
     material = new Material(
         circuit.length,
@@ -394,6 +404,11 @@ function mousePressed() {
 
     if (overPanel(mouseX, mouseY)) return;
 
+    if (mouseButton === RIGHT) {
+        startNewCircuit();
+        return;
+    }
+
     if (mode === "draw") {
         circuit.addPoint(
             mouseX,
@@ -451,4 +466,15 @@ function positionSliders() {
     sliderDiameter.position(panel.x, s + 64);
     sliderVoltage.position(panel.x, s + 110);
     sliderInterval.position(panel.x, s + 156);
+}
+
+function startNewCircuit() {
+    if (!circuit) return;
+    setMode("draw");
+    circuit.newCircuit();
+    showHint("New circuit: click anywhere to start it");
+}
+
+function keyPressed() {
+    if (key === "n" || key === "N") startNewCircuit();
 }

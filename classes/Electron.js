@@ -9,14 +9,15 @@ class Electron {
 
         this.followLookahead = 25
         this.maxSpeed = 5
-        this.segment = 0
+        this.seg = null
+        this.forward = true   // true: start -> end, false: end -> start
     }
     display() {
         push();
         translate(this.pos.x, this.pos.y);
         rotate(this.vel.heading());
         imageMode(CENTER);
-        image(imgElectron, 0, 0, this.radius*10, this.radius*10);
+        image(imgElectron, 0, 0, this.radius * 10, this.radius * 10);
         pop();
     }
     update() {
@@ -53,55 +54,46 @@ class Electron {
     }
 
     follow(path) {
+        if (path.segments.length === 0) return
+
+        if (!this.seg || !path.segments.includes(this.seg)) {
+            this.seg = path.nearestSegment(this.pos.x, this.pos.y)
+            this.forward = true
+        }
+
+        let seg = this.seg
+        let a = this.forward ? seg.start : seg.end
+        let b = this.forward ? seg.end : seg.start
+
+        if (p5.Vector.dist(this.pos, b) < max(seg.width / 2, 12)) {
+            const next = path.chooseNext(b, seg)
+            if (next) {
+                this.seg = next
+                this.forward = next.start === b
+                seg = next
+                a = this.forward ? seg.start : seg.end
+                b = this.forward ? seg.end : seg.start
+            }
+        }
+
         let future = this.vel.copy()
         future.normalize()
         future.mult(this.followLookahead)
         let futurePos = p5.Vector.add(this.pos, future)
 
-        // If we wanted them to loop we could remove the "- 1" at the end
-        let numSegments = path.points.length - 1
+        let normalPoint = this.getNormalPoints(futurePos, a, b)
+        let dir = p5.Vector.sub(b, a)
+        dir.normalize()
 
-        let target = null
-        let highest = Infinity
-        let bestOffset = 0
+        let deadEnd = path.segmentsAt(b).length <= 1
+        let ahead = deadEnd
+            ? min(25, p5.Vector.dist(normalPoint, b))
+            : 25
 
-        for (let offset = 0; offset <= 1; offset++) {
-            let i = (this.segment + offset) % numSegments
+        let target = normalPoint.copy()
+        target.add(p5.Vector.mult(dir, ahead))
 
-            let start = path.points[i]
-            let end = path.points[(i + 1) % path.points.length]
-
-            let normalPoint = this.getNormalPoints(futurePos, start, end)
-            let dir = p5.Vector.sub(end, start)
-
-            // If the normal points goes beyond the path segments
-            // assumes that is at the end
-            if (normalPoint.x < min(start.x, end.x) ||
-                normalPoint.x > max(start.x, end.x) ||
-                normalPoint.y < min(start.y, end.y) ||
-                normalPoint.y > max(start.y, end.y)) {
-                normalPoint = end.copy()
-            }
-
-            let dist = p5.Vector.dist(futurePos, normalPoint)
-
-            if (dist < highest) {
-                highest = dist
-                bestOffset = offset
-
-                dir.normalize()
-                // 100% arbitrary
-                dir.mult(25)
-
-                target = normalPoint.copy()
-                target.add(dir)
-            }
-
-        }
-
-        this.segment = (this.segment + bestOffset) % numSegments
-
-        if (target != null && highest > path.matWidth / 2) {
+        if (p5.Vector.dist(futurePos, normalPoint) > 0) {
             this.seek(target)
         }
     }
