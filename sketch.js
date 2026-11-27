@@ -42,7 +42,10 @@ async function setup() {
         "images/ls_caja.png",
         "images/pkmn_pikachu.png",
         "images/mtrd_samus.jpg",
-        "images/tec_torres.png"];
+        "images/tec_torres.png", 
+        "images/jjba_dio.jpg",
+        "images/jjba_joseph.jpg", 
+        "images/jjba_joseph.jpg"];
 
     memesElectron = ["images/gi_electro.webp", 
         "images/Mr_Electric_render.webp", 
@@ -50,15 +53,21 @@ async function setup() {
         "images/ls_dona.png",
         "images/pkmn_rayo.png",
         "images/mtrd_misil.png",
-        "images/tec_c.png"];
+        "images/tec_c.png", 
+        "images/jjba_daga.png",
+        "images/jjba_bala.png",
+        "images/jjba_bala.png"];
 
     memesReceptor = ["images/gi_monumento.webp", 
         "images/Mr_Electric_render.webp", 
         "images/z_link.png",
         "images/ls_homero.png",
         "images/pkmn_goldeen.png",
-        "images/ridley.png",
-        "images/tec_tec.jpg"];
+        "images/mtrd_ridley.png",
+        "images/tec_tec.jpg", 
+        "images/jjba_jotaro.jpeg",
+        "images/jjba_straits.webp",
+        "images/soldado.webp"];
 
     bgColor = color(0, 0, 0);
     buttons = {};
