@@ -1,7 +1,7 @@
 class Receptor {
     constructor(x, y) {
         this.pos = createVector(x, y);
-        this.size = 15;
+        this.size = 18;
         this.glowSize;
         this.maxGlow = 255;
         this.glowIntensity = 0;
@@ -10,7 +10,7 @@ class Receptor {
     display() {
         noStroke();
         imageMode(CENTER);
-        image(imgReceptor, this.pos.x, this.pos.y, this.size*10, this.size*17);
+        image(imgReceptor, this.pos.x, this.pos.y, this.size*10, this.size*16);
         if (this.glowIntensity > 0) {
             fill(247, 232, 64, this.glowIntensity * 0.5);
             ellipse(this.pos.x, this.pos.y - 50, this.size * this.glowSize);

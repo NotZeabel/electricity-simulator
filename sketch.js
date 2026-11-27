@@ -24,15 +24,44 @@ var imgElectron;
 var imgEmitter;
 var imgReceptor;
 
+let memesEmitter;
+let memesElectron;
+let memesReceptor;
+let currentMemeImg;
+
 async function setup() {
     createCanvas(windowWidth, windowHeight);
     document.addEventListener("contextmenu", (e) => e.preventDefault());
 
+    loadDefaultImages();
+
+    // Memes: the DNA of the soul
+    memesEmitter = ["images/gi_ei.webp", 
+        "images/Mr_Electric_render.webp", 
+        "images/z_revali.png",
+        "images/ls_caja.png",
+        "images/pkmn_pikachu.png",
+        "images/mtrd_samus.jpg",
+        "images/tec_torres.png"];
+
+    memesElectron = ["images/gi_electro.webp", 
+        "images/Mr_Electric_render.webp", 
+        "images/z_flecha.webp",
+        "images/ls_dona.png",
+        "images/pkmn_rayo.png",
+        "images/mtrd_misil.png",
+        "images/tec_c.png"];
+
+    memesReceptor = ["images/gi_monumento.webp", 
+        "images/Mr_Electric_render.webp", 
+        "images/z_link.png",
+        "images/ls_homero.png",
+        "images/pkmn_goldeen.png",
+        "images/ridley.png",
+        "images/tec_tec.jpg"];
+
     bgColor = color(0, 0, 0);
     buttons = {};
-    imgElectron = await loadImage("images/electron.png");
-    imgEmitter = await loadImage("images/emitter.png");
-    imgReceptor = await loadImage("images/receptor.png");
 
     // ===== TAMAÑO Y POSICIÓN DE LOS BOTONES =====
 
@@ -477,4 +506,25 @@ function startNewCircuit() {
 
 function keyPressed() {
     if (key === "n" || key === "N") startNewCircuit();
+
+    if (key === " ") loadMemeImages();
+
+    if (key === "r" || key === "R") loadDefaultImages();
+}
+
+async function loadDefaultImages() {
+    imgElectron = await loadImage("images/electron.png");
+    imgEmitter = await loadImage("images/emitter.png");
+    imgReceptor = await loadImage("images/receptor.png");
+}
+
+async function loadMemeImages() {
+    let i = floor(random(memesElectron.length));
+    while (i == currentMemeImg)
+        i = floor(random(memesElectron.length));
+
+    imgElectron = await loadImage(memesElectron[i]);
+    imgEmitter = await loadImage(memesEmitter[i]);
+    imgReceptor = await loadImage(memesReceptor[i]);
+    currentMemeImg = i;
 }

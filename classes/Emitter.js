@@ -4,7 +4,7 @@ class Emitter {
         this.voltage = voltage;
         this.lastEmission = 0;
         this.emissionInterval = emissionInterval;
-        this.size = 12;
+        this.size = 18;
     }
     update(emissionInterval, voltage) {
         this.emissionInterval = emissionInterval;
